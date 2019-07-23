@@ -47,6 +47,7 @@ module Loader
     include Handlers::RestrictedTo
     include Handlers::Password
     include Handlers::PublicKey
+    include Handlers::Provision
 
     attr_reader :policy_version, :create_records, :delete_records, :new_roles, :schemata
 
@@ -62,14 +63,16 @@ module Loader
       policy_factories: [ :role_id, :base_policy_id, :template ]
     }
 
-    def initialize policy_version
+    def initialize policy_version, context: {}
       @policy_version = policy_version
       @schemata = Schemata.new
+      @context = context
 
       # Transform each statement into a Loader type
       @create_records = policy_version.create_records.map do |policy_object|
         Loader::Types.wrap policy_object, self
       end
+
       @delete_records = policy_version.delete_records.map do |policy_object|
         Loader::Types.wrap policy_object, self
       end
@@ -108,6 +111,8 @@ module Loader
       store_public_keys
 
       store_restricted_to
+
+      provision_values
 
       emit_audit
     end
@@ -388,8 +393,8 @@ module Loader
       @loader = loader
     end
 
-    def self.from_policy(policy_version)
-      CreatePolicy.new(Loader::Orchestrate.new(policy_version))
+    def self.from_policy(policy_version, context:)
+      CreatePolicy.new(Loader::Orchestrate.new(policy_version, context: context))
     end
 
     def call
@@ -411,8 +416,8 @@ module Loader
       @loader = loader
     end
 
-    def self.from_policy(policy_version)
-      ReplacePolicy.new(Loader::Orchestrate.new(policy_version))
+    def self.from_policy(policy_version, context:)
+      ReplacePolicy.new(Loader::Orchestrate.new(policy_version, context: context))
     end
 
     def call
@@ -438,8 +443,8 @@ module Loader
       @loader = loader
     end
 
-    def self.from_policy(policy_version)
-      ModifyPolicy.new(Loader::Orchestrate.new(policy_version))
+    def self.from_policy(policy_version, context:)
+      ModifyPolicy.new(Loader::Orchestrate.new(policy_version, context: context))
     end
 
     def call
