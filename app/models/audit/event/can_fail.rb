@@ -32,13 +32,14 @@ module Audit
       module ClassMethods
         # Automatically initialize an instance with data from currently handled
         # exception (if any).
-        def new_with_exception **parameters
-          if $ERROR_INFO
-            new({ success: false, error_message: $ERROR_INFO.message }.merge(parameters))
-          else
-            new({ success: true }.merge(parameters))
-          end
-        end
+        # TODO: delete.  No results found when grepping
+        # def new_with_exception **parameters
+        #   if $ERROR_INFO
+        #     new({ success: false, error_message: $ERROR_INFO.message }.merge(parameters))
+        #   else
+        #     new({ success: true }.merge(parameters))
+        #   end
+        # end
       end
 
       protected

@@ -4,9 +4,6 @@ require 'logger'
 require 'syslog'
 require 'time'
 
-require 'active_support'
-require 'active_support/core_ext/object/try'
-
 require 'util/struct'
 
 class Logger
@@ -26,11 +23,48 @@ class Logger
         SEVERITY_MAP = {
           Logger::Severity::DEBUG => Syslog::LOG_DEBUG,
           Logger::Severity::ERROR => Syslog::LOG_ERR,
+          # TODO: is this right? (doesn't match reverse map)
           Logger::Severity::FATAL => Syslog::LOG_CRIT,
           Logger::Severity::INFO => Syslog::LOG_INFO,
           Logger::Severity::WARN => Syslog::LOG_WARNING
         }.freeze
 
+        # header: "<#{severity + facility}>1"
+        # timestamp: time.utc.iso8601 3
+        # hostname: nil -- Will be filled in by syslogd.
+        # progname: progname
+        # Format.pid: Thread.current[:request_id] || Process.pid
+        # msgid: msg.try(:message_id)
+        # sd:
+            # return unless (sdata = msg.try(:structured_data))
+            # sdata.map do |id, params|
+            #   format "[%s]", [id, *Format.sd_parameters(params)].join(" ")
+            # end.join
+        # msg:
+        #
+        # HENCE:
+        # passed or hardoded:
+        # - severity
+        # - facility
+        # - time
+        # - progname
+        # - msg (finally to_s)
+        #
+        # How it's used:
+        #
+        # @event.new(
+        #     role: role,
+        #     authenticator_name: @authenticator_input.authenticator_name,
+        #     service: @resource_cls[webservice_id],
+        #     success: @success,
+        #     error_message: @message
+        # ).log_to @audit_log
+        #
+        # # Defined in CanFail
+        # def severity
+        #   success ? Syslog::LOG_INFO : Syslog::LOG_WARNING
+        # end
+        #
         def to_s
           [header, timestamp, hostname, progname, Format.pid, msgid, sd, msg]
             .map {|part| part || '-'}.join(" ") + "\n"
@@ -40,6 +74,7 @@ class Logger
           "<#{severity + facility}>1"
         end
 
+        # TODO: Severity translations now spread across two classes
         def severity
           msg.try(:severity) || SEVERITY_MAP[super]
         end

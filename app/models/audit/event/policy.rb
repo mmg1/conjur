@@ -7,6 +7,13 @@ module Audit
     class Policy < Event
       field :operation, :subject, policy_version: nil, user: nil
       severity Syslog::LOG_NOTICE
+      # From the stdlib source:
+      # https://github.com/ruby/ruby/blob/b753929806d0e42cdfde3f1a8dcdbf678f937e44/ext/syslog/syslog.c#L109
+      #
+      # * LOG_AUTH:: Security or authorization. Deprecated, use LOG_AUTHPRIV
+      # *            instead.
+      # * LOG_AUTHPRIV:: Security or authorization messages which should be kept
+      # *                private.
       facility Syslog::LOG_AUTH
       message_id 'policy'
 
