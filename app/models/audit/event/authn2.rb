@@ -1,39 +1,56 @@
 module Audit
-  class Event2
+  module Event2
     class Authn
 
-      # abstract_field :facility, :message, :message_id, :severity, :structured_data, :progname
       def initialize(
           role:,
           authenticator_name:,
           service:,
           success:,
-          error_message:
+          operation:
       )
         @role = role
         @authenticator_name = authenticator_name
         @service = service
         @success = success
-        @error_message = error_message
+        @operation = operation
+      end
 
-        evt = PossiblyFailingEvent.new(
-            facility: facility,
-            message_id: message_id,
-            success_message:,
+      def progname
+        Event2.progname
+      end
 
-            structured_data:,
-            failure_message:, # TODO: Add comment re: difference between these 2
-            error_message: nil,
-            success: true
-        )
+      def severity
+        possibly_failing_event.severity
       end
 
       def authenticator_description
-        # TODO Add part with name and servicemessagepart
+        return @authenticator_name unless service_id
+        "#{authenticator_name} #{service_id}"
+      end
+
+      def service_id
+        @service&.id
+      end
+
+      def message(success_msg:, failure_msg:, error_msg: nil)
+        possibly_failing_event.message(
+            success_msg: success_msg,
+            failure_msg: failure_msg,
+            error_msg: error_msg
+        )
       end
 
       def message_id
         "authn"
+      end
+
+      def structured_data
+        {
+            SDID::SUBJECT => {role: role_id},
+            SDID::AUTH => auth_stuctured_data,
+            SDID::ACTION => {operation: @operation}
+        }
       end
 
       def facility
@@ -41,53 +58,18 @@ module Audit
         # https://github.com/ruby/ruby/blob/b753929806d0e42cdfde3f1a8dcdbf678f937e44/ext/syslog/syslog.c#L109
         Syslog::LOG_AUTHPRIV
       end
+
+      private
+
+      def possibly_failing_event
+        @possibly_failing_event ||= PossiblyFailingEvent.new(@success)
+      end
+
+      def auth_stuctured_data
+        return {authenticator: @authenticator_name} unless service_id
+        {authenticator: @authenticator_name, service: service_id}
+      end
     end
-end
-
-class Event2
-    @role = role
-    @authenticator_name = authenticator_name
-    @success = success
-    @service = service
-  end
-
-  def severity
-    success ? Syslog::LOG_INFO : Syslog::LOG_WARNING
-  end
-
-  private
-
-  def service_id
-    @service&.id
-  end
-
-  def role_id
-    @role.id
-  end
-
-  # TODO: Use longer name
-  def auth_sd
-    { authenticator: authenticator_name }.merge(
-        service_id ? { service: service_id } : {}
-    )
-  end
-
-  # From super: CanFail
-  # def structured_data
-  #   super.deep_merge SDID::ACTION => { result: success_text }
-  # end
-
-  # what varies among the different events?
-  # make that into data objects which we pass to event to configure it.
-  # I can generate Class objects that way.
-  # EventClass.new(config...) => AuthnEvent, BlahEvent, etc
-  # Since AuthnEvent has subtypes, that means it shares config
-  # YES!
-  def structured_data
-    super.deep_merge(
-        SDID::SUBJECT => { role: role_id },
-        SDID::AUTH => auth_sd,
-        SDID::ACTION => { operation: operation }
-    )
   end
 end
+

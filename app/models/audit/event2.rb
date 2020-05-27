@@ -1,3 +1,4 @@
+# TODO: Move to README?
 # facility:
 #   The type of program that is logging the message. An RFC5424-specified
 #   numeric code.
@@ -19,26 +20,11 @@
 #   See: https://tools.ietf.org/html/rfc5424#section-6.2.1
 #
 module Audit
-  class Event2
-
+  module Event2
     # "progname" is required by ruby's Syslog::Logger interface. See:
     # https://ruby-doc.org/stdlib-2.6.3/libdoc/syslog/rdoc/Syslog/Logger.html#method-i-add
-    PROG_NAME = "conjur"
-
-    attr_reader :facility, :message, :message_id, :severity, :structured_data
-
-    def initialize(
-        facility:,
-        message:,
-        message_id:,
-        severity:,
-        structured_data:
-    )
-      @facility = facility
-      @message = message
-      @message_id = message_id
-      @severity = severity
-      @structured_data = structured_data
+    def self.progname
+      "conjur"
     end
   end
 end

@@ -1,53 +1,30 @@
-require 'forwardable'
-
 module Audit
-  class PossiblyFailingEvent
+  module Event2
+    class PossiblyFailingEvent
 
-    extend Forwardable
-    def_delegators :@event, :facility, :message_id, :structured_data
+      def initialize(success)
+        @success = success
+      end
 
-    def initialize(
-      facility:,
-      message_id:,
-      success_message:,
+      # TODO: Add comment re: difference between these failure & error msgs
+      def message(success_msg:, failure_msg:, error_msg: nil)
+        return success_msg if @success
+        [failure_msg, error_msg].compact.join(': ')
+      end
 
-      structured_data:,
-      failure_message:, # TODO: Add comment re: difference between these 2
-      error_message: nil,
-      success: true
-    )
-      @success_message = success_message
-      @failure_message = failure_message
-      @error_message = error_message
-      @success = success
-      @event = Audit::Event2.new(
-        facility: facility,
-        message: nil, # We implement it here rather than delegate.
-        message_id: message_id,
-        severity: severity,
-        structured_data: structured_data
-      )
-    end
+      def structured_data(success_text)
+        { SDID::ACTION => { result: success_text } }
+      end
 
-    def message
-      return @success_message if @success
-      [@failure_message, @error_message].compact.join(': ')
-    end
+      def severity
+        @success ? Syslog::LOG_INFO : Syslog::LOG_WARNING
+      end
 
-    # Event classes delegating to this class will merge this structured data
-    # with their own.
-    def action_structured_data(success_text)
-      { SDID::ACTION => { result: success_text } }
-    end
+      private
 
-    def severity
-      @success ? Syslog::LOG_INFO : Syslog::LOG_WARNING
-    end
-
-    private
-
-    def success_text
-      @success ? 'success' : 'failure'
+      def success_text
+        @success ? 'success' : 'failure'
+      end
     end
   end
 end

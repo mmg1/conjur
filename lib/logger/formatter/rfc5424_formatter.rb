@@ -60,11 +60,6 @@ class Logger
         #     error_message: @message
         # ).log_to @audit_log
         #
-        # # Defined in CanFail
-        # def severity
-        #   success ? Syslog::LOG_INFO : Syslog::LOG_WARNING
-        # end
-        #
         def to_s
           [header, timestamp, hostname, progname, Format.pid, msgid, sd, msg]
             .map {|part| part || '-'}.join(" ") + "\n"
