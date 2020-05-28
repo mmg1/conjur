@@ -6,7 +6,7 @@ module Audit
       class Authenticate
 
         extend Forwardable
-        def_delegators :@authn, :facility, :message, :message_id, :severity,
+        def_delegators :@authn, :facility, :message_id, :severity,
                        :structured_data, :progname
 
         def initialize(
@@ -33,22 +33,26 @@ module Audit
         end
 
         def to_s
+          message
+        end
+
+        def message
           @authn.message(
-            success_msg: success_msg,
-            failure_msg: failure_msg,
-            error_msg: @error_message
+              success_msg: success_msg,
+              failure_msg: failure_msg,
+              error_msg: @error_message
           )
         end
 
         private
 
         def success_msg
-          "#{role.id} successfully authenticated with authenticator " \
+          "#{@role&.id} successfully authenticated with authenticator " \
           "#{@authn.authenticator_description}"
         end
 
         def failure_msg
-          "#{role.id} failed to authenticate with authenticator "\
+          "#{@role&.id} failed to authenticate with authenticator "\
           "#{@authn.authenticator_description}"
         end
       end

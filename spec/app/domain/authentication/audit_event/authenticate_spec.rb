@@ -14,6 +14,7 @@ describe Authentication::AuditEvent::Authenticate do
 
   context 'when successful' do
     it 'sends an info message' do
+      p event.structured_data
       expect(logger).to receive(:log).with \
         Logger::Severity::INFO,
         an_object_having_attributes(

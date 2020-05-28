@@ -12,7 +12,7 @@ module Audit
         [failure_msg, error_msg].compact.join(': ')
       end
 
-      def structured_data(success_text)
+      def structured_data
         { SDID::ACTION => { result: success_text } }
       end
 
