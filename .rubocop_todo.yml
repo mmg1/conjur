@@ -763,7 +763,6 @@ Style/Documentation:
 # Offense count: 7
 Style/DoubleNegation:
   Exclude:
-    - 'app/models/authenticate.rb'
     - 'app/models/policy_version.rb'
     - 'cucumber/api/features/support/rest_helpers.rb'
     - 'lib/tasks/account.rake'

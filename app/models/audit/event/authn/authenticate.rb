@@ -26,34 +26,21 @@ module Audit
           )
         end
 
-        # TODO: move to shared object; then delete entirely (update all calling
-        #   sites)
-        def log_to(logger)
-          logger.log(severity, self, Event2::progname)
-        end
-
+        # TODO: This won't be needed if we fix the RFC5424 formatter
         def to_s
           message
         end
 
         def message
           @authn.message(
-              success_msg: success_msg,
-              failure_msg: failure_msg,
+              success_msg:
+                "#{@role&.id} successfully authenticated with authenticator " \
+                "#{@authn.authenticator_description}",
+              failure_msg:
+                "#{@role&.id} failed to authenticate with authenticator "\
+                "#{@authn.authenticator_description}",
               error_msg: @error_message
           )
-        end
-
-        private
-
-        def success_msg
-          "#{@role&.id} successfully authenticated with authenticator " \
-          "#{@authn.authenticator_description}"
-        end
-
-        def failure_msg
-          "#{@role&.id} failed to authenticate with authenticator "\
-          "#{@authn.authenticator_description}"
         end
       end
     end

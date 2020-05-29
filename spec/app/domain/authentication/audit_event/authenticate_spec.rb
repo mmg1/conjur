@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Authentication::AuditEvent::Authenticate do
+describe Audit::Event2::Authn::Authenticate do
   subject(:event) do
     Audit::Event2::Authn::Authenticate.new(
         role: the_user,

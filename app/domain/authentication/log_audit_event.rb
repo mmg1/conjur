@@ -4,11 +4,11 @@ module Authentication
 
   LogAuditEvent = CommandClass.new(
     dependencies: {
-      role_cls:  ::Role,
+      role_cls: ::Role,
       resource_cls: ::Resource,
       audit_log: ::Audit.logger
     },
-    inputs:       %i(authenticator_name webservice role event success message)
+    inputs: %i(event)
   ) do
 
     # TODO: Use Audit::Event2 events everywhere.

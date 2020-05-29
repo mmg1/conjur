@@ -65,10 +65,7 @@ RSpec.describe 'Authentication::Oidc' do
   let(:audit_success) { true }
   let(:mocked_log_audit_event) do
     double('log_audit_event').tap do |log_audit_event|
-      expect(log_audit_event).to receive(:call).with(hash_including(
-        event: ::Authentication::AuditEvent::Authenticate,
-        success: audit_success
-        ))
+      expect(log_audit_event).to receive(:call)
     end
   end
 
