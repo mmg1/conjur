@@ -25,8 +25,30 @@ require 'logger/formatter/rfc5424_formatter'
 #
 #    Formatter docs:
 #    https://ruby-doc.org/stdlib-2.5.1/libdoc/logger/rdoc/Logger.html#class-Logger-label-Format
+
+# TODO: Move into domain?
+# AuditLogAdapter provides a convenient interface for logging events.  It
+# translates that interface into the one expected by the ruby's default logger.
+class AuditLogAdapter
+  def initialize(ruby_logger)
+    @ruby_logger = ruby_logger
+  end
+
+  def log(event)
+    @ruby_logger.log(event.severity, event, ::Audit::Event2.progname)
+  end
+end
+
+
 if path = Rails.application.config.try(:audit_socket)
   Audit.logger = Logger.new(UNIXSocket.open(path)).tap do |logger|
     logger.formatter = Logger::Formatter::RFC5424Formatter
   end
 end
+
+# Give our logger a clean interface so we can:
+#   Audit.logger.log(some_event)
+# instead of:
+#   Audit.logger.log(event.severity, event, ::Audit::Event2.progname)
+Audit.logger = AuditLogAdapter.new(Audit.logger)
+
