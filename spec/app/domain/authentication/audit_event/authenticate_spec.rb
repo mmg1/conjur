@@ -14,8 +14,9 @@ describe Authentication::AuditEvent::Authenticate do
 
   context 'when successful' do
     it 'sends an info message' do
-      p event.structured_data
-      expect(logger).to receive(:log).with \
+      audit_logger = Audit::LogAdapter.new(ruby_logger)
+
+      expect(audit_logger).to receive(:log).with(
         Logger::Severity::INFO,
         an_object_having_attributes(
           message: matching(/successfully authenticated/),
@@ -32,14 +33,16 @@ describe Authentication::AuditEvent::Authenticate do
               result: 'success'
             }
           }
-        ), 'conjur'
-      event.log_to logger
+        ),
+        'conjur'
+      )
+      audit_logger.log(event)
     end
   end
 
   describe 'on failure' do
     subject(:event) do
-      Authentication::AuditEvent::Authenticate.new(
+      Audit::Event2::Authn::Authenticate.new(
         role: the_user,
         authenticator_name: 'authn-test',
         service: service,
@@ -49,7 +52,9 @@ describe Authentication::AuditEvent::Authenticate do
     end
 
     it 'sends a warning message' do
-      expect(logger).to receive(:log).with \
+      audit_logger = Audit::LogAdapter.new(ruby_logger)
+
+      expect(audit_logger).to receive(:log).with(
         Logger::Severity::WARN,
         an_object_having_attributes(
           message: matching(/failed to authenticate.*: test error/),
@@ -66,8 +71,10 @@ describe Authentication::AuditEvent::Authenticate do
               result: 'failure'
             }
           }
-        ), 'conjur'
-      event.log_to logger
+        ),
+        'conjur'
+      )
+      audit_logger.log(event)
     end
   end
 
@@ -80,7 +87,7 @@ describe Authentication::AuditEvent::Authenticate do
     end
   end
 
-  let(:logger) { instance_double Logger }
+  let(:ruby_logger) { instance_double Logger }
   let(:service) { double(Resource, id: 'rspec:webservice:test') }
   include_context("create user") { let(:login) { 'alice' } }
 end
