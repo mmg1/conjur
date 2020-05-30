@@ -5,10 +5,10 @@ require 'spec_helper'
 describe Audit::Event2::Authn::Authenticate do
   subject(:event) do
     Audit::Event2::Authn::Authenticate.new(
-        role: the_user,
-        authenticator_name: 'authn-test',
-        service: service,
-        success: true
+      role: the_user,
+      authenticator_name: 'authn-test',
+      service: service,
+      success: true
     )
   end
 
