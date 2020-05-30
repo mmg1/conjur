@@ -49,8 +49,9 @@ module Audit
         {
           SDID::SUBJECT => {role: @role.id},
           SDID::AUTH => auth_stuctured_data,
-          SDID::ACTION => action_structured_data
-        }
+        }.merge(
+          possibly_failing_event.action_sd(@operation)
+        )
       end
 
       def facility
@@ -60,13 +61,6 @@ module Audit
       end
 
       private
-
-      def action_structured_data
-        result_sd = possibly_failing_event.structured_data
-        result_sd[SDID::ACTION].merge(
-            { operation: @operation }
-        )
-      end
 
       def possibly_failing_event
         @possibly_failing_event ||= PossiblyFailingEvent.new(@success)

@@ -12,8 +12,9 @@ module Audit
         [failure_msg, error_msg].compact.join(': ')
       end
 
-      def structured_data
-        { SDID::ACTION => { result: success_text } }
+      # action_sd means "action structured data"
+      def action_sd(operation)
+        { SDID::ACTION => { result: success_text, operation: operation } }
       end
 
       def severity
