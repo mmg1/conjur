@@ -1,17 +1,20 @@
+
 module Audit
   module Event2
-    class Update
+    class Fetch
 
       def initialize(
         user:,
         resource:,
         success:,
-        error_message:
+        error_message:,
+        version:
       )
         @user = user
         @resource = resource
         @success = success
         @error_message = error_message
+        @version = version
       end
 
       def progname
@@ -19,33 +22,26 @@ module Audit
       end
 
       def severity
-        @success ? Syslog::LOG_NOTICE : Syslog::LOG_WARNING
-        # TODO: I think this was intended to be the following
-        #   but was mistakenly change to above (just sloppy inconsistency):
-        # possibly_failing_event.severity
-      end
-
-      def service_id
-        @service&.id
+        possibly_failing_event.severity
       end
 
       def message
         possibly_failing_event.message(
-          success_msg: "#{user.id} updated #{resource.id}",
-          failure_msg: "#{user.id} tried to update #{resource.id}",
+          success_msg: "#{@user.id} fetched #{resource_description}",
+          failure_msg: "#{@user.id} tried to fetch #{resource_description}",
           error_msg: @error_message
         )
       end
 
       # message_id or "operation". An Syslog term from RFC5424.
       def message_id
-        "update"
+        "fetch"
       end
 
       def structured_data
         {
           SDID::AUTH => { user: user.id },
-          SDID::SUBJECT => Subject::Resource.new(resource.pk_hash).to_h,
+          SDID::SUBJECT => subject_sd_value,
         }.merge(
           possibly_failing_event.action_sd(message_id)
         )
@@ -60,6 +56,16 @@ module Audit
       end
 
       private
+
+      def resource_description
+        return @resource.id unless @version
+        "version #{@version} of #{@resource.id}"
+      end
+
+      def subject_sd_value
+        return { resource: resource.id } unless @version
+        { resource: resource.id, version: @version }
+      end
 
       def possibly_failing_event
         @possibly_failing_event ||= PossiblyFailingEvent.new(@success)

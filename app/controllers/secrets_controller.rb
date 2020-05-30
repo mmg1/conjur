@@ -79,7 +79,7 @@ class SecretsController < RestController
     )
 
     Audit.logger.log(
-      Audit::Event::Fetch.new(fetch_info)
+      Audit::Event2::Fetch.new(fetch_info)
     )
   end
 
