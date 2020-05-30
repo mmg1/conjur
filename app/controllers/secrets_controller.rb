@@ -22,7 +22,7 @@ class SecretsController < RestController
   ensure
     update_info = error_info.merge(resource: resource, user: @current_user)
     Audit.logger.log(
-      Audit::Event::Update.new(update_info)
+      Audit::Event2::Update.new(update_info)
     )
   end
   
