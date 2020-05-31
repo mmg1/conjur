@@ -71,7 +71,7 @@ class RolesController < RestController
     # In this case, don't emit an audit record.
     if (membership = role.grant_to member)
       Audit.logger.log(
-        Audit::Event::Policy.new(
+        Audit::Event2::Policy.new(
           operation: :add,
           subject: Audit::Subject::RoleMembership.new(membership.pk_hash),
           user: current_user
@@ -96,7 +96,7 @@ class RolesController < RestController
     membership.destroy
 
     Audit.logger.log(
-      Audit::Event::Policy.new(
+      Audit::Event2::Policy.new(
         operation: :remove,
         subject: Audit::Subject::RoleMembership.new(membership.pk_hash),
         user: current_user
