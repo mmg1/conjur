@@ -1129,7 +1129,6 @@ Style/SafeNavigation:
     - 'app/controllers/host_factories_controller.rb'
     - 'app/domain/authentication/authn_k8s/k8s_resolver.rb'
     - 'app/domain/rotation/conjur_facade.rb'
-    - 'app/models/audit/event/authn.rb'
     - 'app/models/credentials.rb'
     - 'app/models/loader/types.rb'
 
