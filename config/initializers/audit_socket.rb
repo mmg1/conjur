@@ -37,5 +37,5 @@ end
 #   Audit.logger.log(some_event)
 # instead of:
 #   Audit.logger.log(event.severity, event, ::Audit::Event2.progname)
-Audit.logger = Audit::LogAdapter.new(Audit.logger)
+Audit.logger = Audit::LogAdapter.new(Rails.logger)
 
