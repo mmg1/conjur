@@ -184,24 +184,26 @@ module Authentication
       end
 
       def audit_success
-        @log_audit_event.(
-          event: AuditEvent::InjectClientCert,
-          authenticator_name: KUBERNETES_AUTHENTICATOR_NAME,
-          webservice: webservice,
-          role: host,
-          success: true,
-          message: nil
+        @log_audit_event.call(
+          Audit::Event2::Authn::InjectClientCert.new(
+            authenticator_name: KUBERNETES_AUTHENTICATOR_NAME,
+            service: webservice,
+            role: host,
+            success: true,
+            error_message: nil
+          )
         )
       end
 
       def audit_failure(err)
-        @log_audit_event.(
-          event: AuditEvent::InjectClientCert,
-          authenticator_name: KUBERNETES_AUTHENTICATOR_NAME,
-          webservice: webservice,
-          role: host,
-          success: false,
-          message: err.message
+        @log_audit_event.call(
+          Audit::Event2::Authn::InjectClientCert.new(
+            authenticator_name: KUBERNETES_AUTHENTICATOR_NAME,
+            service: webservice,
+            role: host,
+            success: false,
+            error_message: err.message
+          )
         )
       end
     end

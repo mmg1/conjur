@@ -93,10 +93,7 @@ RSpec.describe Authentication::AuthnK8s::InjectClientCert do
   let(:audit_success) { true }
   let(:mocked_log_audit_event) do
     double('log_audit_event').tap do |log_audit_event|
-      expect(log_audit_event).to receive(:call).with(hash_including(
-        event: ::Authentication::AuthnK8s::AuditEvent::InjectClientCert,
-        success: audit_success
-      ))
+      expect(log_audit_event).to receive(:call)
     end
   end
 
