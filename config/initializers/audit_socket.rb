@@ -28,15 +28,18 @@ require 'logger/formatter/rfc5424_formatter'
 #    Formatter docs:
 #    https://ruby-doc.org/stdlib-2.5.1/libdoc/logger/rdoc/Logger.html#class-Logger-label-Format
 
-if path = Rails.application.config.try(:audit_socket)
-  Audit.logger = Logger.new(UNIXSocket.open(path)).tap do |logger|
-    logger.formatter = Logger::Formatter::RFC5424Formatter
-  end
-end
-
 # Give our logger a clean interface so we can:
 #   Audit.logger.log(some_event)
 # instead of:
 #   Audit.logger.log(event.severity, event, ::Audit::Event2.progname)
-Audit.logger = Audit::LogAdapter.new(Rails.logger)
+if path = Rails.application.config.try(:audit_socket)
+  Audit.logger = Audit::LogAdapter.new(
+    Logger.new(UNIXSocket.open(path)).tap do |logger|
+      logger.formatter = Logger::Formatter::RFC5424Formatter
+    end
+  )
+else
+  Audit.logger = Audit::LogAdapter.new(Rails.logger)
+end
+
 
