@@ -6,7 +6,7 @@ module Audit
         user:,
         resource:,
         success:,
-        error_message:
+        error_message: nil
       )
         @user = user
         @resource = resource

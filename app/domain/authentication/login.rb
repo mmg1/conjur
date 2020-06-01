@@ -61,7 +61,7 @@ module Authentication
 
     def audit_success
       @log_audit_event.call(
-        ::Audit::Event2::Authn::Login.new(
+        event: ::Audit::Event2::Authn::Login.new(
           authenticator_name: authenticator_name,
           service: webservice,
           role: role,
@@ -73,7 +73,7 @@ module Authentication
 
     def audit_failure(err)
       @log_audit_event.call(
-        ::Audit::Event2::Authn::Login.new(
+        event: ::Audit::Event2::Authn::Login.new(
           authenticator_name: authenticator_name,
           service: webservice,
           role: role,
