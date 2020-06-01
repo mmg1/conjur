@@ -14,9 +14,11 @@ describe Audit::Event2::Authn::Authenticate do
 
   context 'when successful' do
     it 'sends an info message' do
-      audit_logger = Audit::LogAdapter.new(ruby_logger)
+      # TODO: These two things should be tested separately
+      ruby_log = ruby_logger
+      audit_logger = Audit::LogAdapter.new(ruby_log)
 
-      expect(audit_logger).to receive(:log).with(
+      expect(ruby_log).to receive(:log).with(
         Logger::Severity::INFO,
         an_object_having_attributes(
           message: matching(/successfully authenticated/),
@@ -52,9 +54,11 @@ describe Audit::Event2::Authn::Authenticate do
     end
 
     it 'sends a warning message' do
-      audit_logger = Audit::LogAdapter.new(ruby_logger)
+      # TODO: These two things should be tested separately
+      ruby_log = ruby_logger
+      audit_logger = Audit::LogAdapter.new(ruby_log)
 
-      expect(audit_logger).to receive(:log).with(
+      expect(ruby_log).to receive(:log).with(
         Logger::Severity::WARN,
         an_object_having_attributes(
           message: matching(/failed to authenticate.*: test error/),
