@@ -2,7 +2,8 @@
 
 require 'logger'
 require 'logger/formatter/rfc5424_formatter'
-require 'app/models/audit/log_adapter'
+# require 'app/models/audit'
+# require 'app/models/audit/log_adapter'
 
 # A lot is happening in this small snippet:
 #
