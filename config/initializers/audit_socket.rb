@@ -38,8 +38,10 @@ if path = Rails.application.config.try(:audit_socket)
       logger.formatter = Logger::Formatter::RFC5424Formatter
     end
   )
-else
-  Audit.logger = Audit::LogAdapter.new(Rails.logger)
 end
-
-
+# else
+#   puts "Setting to log adapter"
+#   Audit.logger = Audit::LogAdapter.new(Rails.logger)
+# end
+#
+#

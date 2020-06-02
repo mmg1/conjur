@@ -4,7 +4,7 @@ module Audit
   class << self
     # TODO: Think about this more
     def logger
-      @logger ||= Rails.logger
+      @logger ||= Audit::LogAdapter.new(Rails.logger)
     end
 
     attr_writer :logger
