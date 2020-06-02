@@ -31,8 +31,8 @@ module Audit
 
       def message
         possibly_failing_event.message(
-          success_msg: "#{user.id} updated #{resource.id}",
-          failure_msg: "#{user.id} tried to update #{resource.id}",
+          success_msg: "#{@user.id} updated #{@resource.id}",
+          failure_msg: "#{@user.id} tried to update #{@resource.id}",
           error_msg: @error_message
         )
       end
@@ -45,7 +45,7 @@ module Audit
       def structured_data
         {
           SDID::AUTH => { user: user.id },
-          SDID::SUBJECT => Subject::Resource.new(resource.pk_hash).to_h,
+          SDID::SUBJECT => Subject::Resource.new(@resource.pk_hash).to_h,
         }.merge(
           possibly_failing_event.action_sd(message_id)
         )

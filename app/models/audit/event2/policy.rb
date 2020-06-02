@@ -23,7 +23,7 @@ module Audit
       end
 
       def message
-        past_tense_verb = operation.to_s.chomp('e') + "ed"
+        past_tense_verb = @operation.to_s.chomp('e') + "ed"
         "#{user.id} #{past_tense_verb} #{@subject}"
       end
 
