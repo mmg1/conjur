@@ -4,6 +4,9 @@ module Audit
   module Event2
     class Authn
       class Login
+        # TODO: Remove these, not needed
+        attr_reader :role, :authenticator_name, :service, :success,
+                    :error_message
 
         extend Forwardable
         def_delegators :@authn, :facility, :message_id, :severity,
@@ -33,7 +36,7 @@ module Audit
         def message
           @authn.message(
             success_msg:
-              "##{@role&.id} successfully logged in with authenticator " \
+              "#{@role&.id} successfully logged in with authenticator " \
                 "#{@authn.authenticator_description}",
             failure_msg:
               "#{@role&.id} failed to login with authenticator " \

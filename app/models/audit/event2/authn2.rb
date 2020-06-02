@@ -26,11 +26,11 @@ module Audit
 
       def authenticator_description
         return @authenticator_name unless service_id
-        "#{@authenticator_name} #{service_id}"
+        "#{@authenticator_name} service #{service_id}"
       end
 
       def service_id
-        @service&.id
+        @service&.resource_id
       end
 
       def message(success_msg:, failure_msg:, error_msg: nil)

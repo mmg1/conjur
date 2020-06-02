@@ -4,6 +4,7 @@ module Audit
   module Event2
     class Authn
       class Authenticate
+        attr_reader :authenticator_name, :service, :success, :error_message
 
         extend Forwardable
         def_delegators :@authn, :facility, :message_id, :severity,
