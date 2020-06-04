@@ -266,12 +266,6 @@ if [[ $enabled_authenticators != $default_authenticators ]]; then
   conjur_isready?
 fi
 
-echo "Starting Conjur server"
-docker-compose exec -d conjur conjurctl server
-
-echo 'Checking if Conjur server is ready'
-conjur_isready?
-
 echo "Creating user alice"
 docker-compose exec client conjur policy load root /src/conjur-server/dev/files/policy.yml
 
