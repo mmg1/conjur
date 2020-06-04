@@ -17,7 +17,7 @@ module Audit
     end
 
     def log(event)
-      @ruby_logger.log(event.severity, event.message, ::Audit::Event2.progname)
+      @ruby_logger.log(event.severity, event, ::Audit::Event2.progname)
     end
   end
 end

@@ -92,6 +92,6 @@ describe Audit::Event2::Authn::Authenticate do
   end
 
   let(:ruby_logger) { instance_double Logger }
-  let(:service) { double(Resource, id: 'rspec:webservice:test') }
+  let(:service) { double(Resource, resource_id: 'rspec:webservice:test') }
   include_context("create user") { let(:login) { 'alice' } }
 end

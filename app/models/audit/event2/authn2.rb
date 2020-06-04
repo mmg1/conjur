@@ -47,7 +47,7 @@ module Audit
 
       def structured_data
         {
-          SDID::SUBJECT => {role: @role.id},
+          SDID::SUBJECT => {role: @role&.id},
           SDID::AUTH => auth_stuctured_data,
         }.merge(
           possibly_failing_event.action_sd(@operation)

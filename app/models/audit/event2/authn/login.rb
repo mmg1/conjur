@@ -19,6 +19,7 @@ module Audit
           success:,
           error_message: nil
         )
+          @role = role
           @error_message = error_message
           @authn = Authn.new(
             role: role,
