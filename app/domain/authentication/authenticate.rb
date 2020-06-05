@@ -11,10 +11,10 @@ module Authentication
 
   Authenticate ||= CommandClass.new(
     dependencies: {
-      token_factory:          TokenFactory.new,
-      validate_security:      ::Authentication::Security::ValidateSecurity.new,
-      validate_origin:        ::Authentication::ValidateOrigin.new,
-      log_audit_event:        ::Authentication::LogAuditEvent.new
+      token_factory:     TokenFactory.new,
+      validate_security: ::Authentication::Security::ValidateSecurity.new,
+      validate_origin:   ::Authentication::ValidateOrigin.new,
+      audit_log:         ::Audit.logger
     },
     inputs:       %i(authenticator_input authenticators enabled_authenticators)
   ) do
@@ -67,8 +67,8 @@ module Authentication
     end
 
     def audit_success
-      @log_audit_event.call(
-        event: ::Audit::Event2::Authn::Authenticate.new(
+      @audit_log.log(
+        ::Audit::Event2::Authn::Authenticate.new(
           authenticator_name: authenticator_name,
           service: webservice,
           role: role,
@@ -79,8 +79,8 @@ module Authentication
     end
 
     def audit_failure(err)
-      @log_audit_event.call(
-        event: ::Audit::Event2::Authn::Authenticate.new(
+      @audit_log.log(
+        ::Audit::Event2::Authn::Authenticate.new(
           authenticator_name: authenticator_name,
           service: webservice,
           role: role,
