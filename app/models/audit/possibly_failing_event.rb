@@ -1,5 +1,5 @@
 module Audit
-  module Event2
+  module Event
     class PossiblyFailingEvent
 
       def initialize(success)

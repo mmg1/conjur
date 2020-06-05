@@ -1,5 +1,5 @@
 module Audit
-  module Event2
+  module Event
     class Authn
 
       def initialize(
@@ -17,7 +17,7 @@ module Audit
       end
 
       def progname
-        Event2.progname
+        Event.progname
       end
 
       def severity

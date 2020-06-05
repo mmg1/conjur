@@ -20,7 +20,7 @@
 #   See: https://tools.ietf.org/html/rfc5424#section-6.2.1
 #
 module Audit
-  module Event2
+  module Event
     # "progname" is required by ruby's Syslog::Logger interface. See:
     # https://ruby-doc.org/stdlib-2.6.3/libdoc/syslog/rdoc/Syslog/Logger.html#method-i-add
     def self.progname

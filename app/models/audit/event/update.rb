@@ -1,5 +1,5 @@
 module Audit
-  module Event2
+  module Event
     class Update
 
       def initialize(
@@ -15,7 +15,7 @@ module Audit
       end
 
       def progname
-        Event2.progname
+        Event.progname
       end
 
       def severity

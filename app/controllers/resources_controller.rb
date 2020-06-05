@@ -56,7 +56,7 @@ class ResourcesController < RestController
     result = assumed_role.allowed_to?(privilege, resource)
 
     Audit.logger.log(
-      Audit::Event2::Check.new(
+      Audit::Event::Check.new(
         user: current_user,
         resource: resource,
         privilege: privilege,

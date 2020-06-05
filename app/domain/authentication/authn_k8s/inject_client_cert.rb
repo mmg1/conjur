@@ -185,7 +185,7 @@ module Authentication
 
       def audit_success
         @audit_log.log(
-          Audit::Event2::Authn::InjectClientCert.new(
+          Audit::Event::Authn::InjectClientCert.new(
             authenticator_name: KUBERNETES_AUTHENTICATOR_NAME,
             service: webservice,
             role: host,
@@ -197,7 +197,7 @@ module Authentication
 
       def audit_failure(err)
         @audit_log.log(
-          Audit::Event2::Authn::InjectClientCert.new(
+          Audit::Event::Authn::InjectClientCert.new(
             authenticator_name: KUBERNETES_AUTHENTICATOR_NAME,
             service: webservice,
             role: host,

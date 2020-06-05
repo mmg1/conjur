@@ -1,23 +1,24 @@
+
 module Audit
-  module Event2
-    class Check
+  module Event
+    class Fetch
 
       def initialize(
         user:,
         resource:,
-        privilege:,
-        role:,
-        success:
+        success:,
+        version:,
+        error_message: nil
       )
         @user = user
         @resource = resource
-        @privilege = privilege
-        @role = role
         @success = success
+        @error_message = error_message
+        @version = version
       end
 
       def progname
-        Event2.progname
+        Event.progname
       end
 
       def severity
@@ -25,23 +26,22 @@ module Audit
       end
 
       def message
-        "#{@user.id} checked if #{role_text} can #{@privilege} " \
-          "#{@resource.id} (#{success_text})"
+        possibly_failing_event.message(
+          success_msg: "#{@user.id} fetched #{resource_description}",
+          failure_msg: "#{@user.id} tried to fetch #{resource_description}",
+          error_msg: @error_message
+        )
       end
 
       # message_id or "operation". An Syslog term from RFC5424.
       def message_id
-        "check"
+        "fetch"
       end
 
       def structured_data
         {
-          SDID::AUTH => { user: @user.id },
-          SDID::SUBJECT => {
-            resource: @resource.id,
-            role: @role.id,
-            privilege: @privilege
-          },
+          SDID::AUTH => { user: user.id },
+          SDID::SUBJECT => subject_sd_value,
         }.merge(
           possibly_failing_event.action_sd(message_id)
         )
@@ -57,16 +57,18 @@ module Audit
 
       private
 
+      def resource_description
+        return @resource.id unless @version
+        "version #{@version} of #{@resource.id}"
+      end
+
+      def subject_sd_value
+        return { resource: resource.id } unless @version
+        { resource: resource.id, version: @version }
+      end
+
       def possibly_failing_event
         @possibly_failing_event ||= PossiblyFailingEvent.new(@success)
-      end
-
-      def role_text
-        @user == @role ? 'they' : @role.id
-      end
-
-      def success_text
-        @possibly_failing_event.success_text
       end
 
     end

@@ -1,12 +1,10 @@
 require 'forwardable'
 
 module Audit
-  module Event2
+  module Event
     class Authn
-      class Login
-        # TODO: Remove these, not needed
-        attr_reader :role, :authenticator_name, :service, :success,
-                    :error_message
+      class Authenticate
+        attr_reader :authenticator_name, :service, :success, :error_message
 
         extend Forwardable
         def_delegators :@authn, :facility, :message_id, :severity,
@@ -26,23 +24,24 @@ module Audit
             authenticator_name: authenticator_name,
             service: service,
             success: success,
-            operation: "login"
+            operation: "authenticate"
           )
         end
 
+        # TODO: This won't be needed if we fix the RFC5424 formatter
         def to_s
           message
         end
 
         def message
           @authn.message(
-            success_msg:
-              "#{@role&.id} successfully logged in with authenticator " \
+              success_msg:
+                "#{@role&.id} successfully authenticated with authenticator " \
                 "#{@authn.authenticator_description}",
-            failure_msg:
-              "#{@role&.id} failed to login with authenticator " \
+              failure_msg:
+                "#{@role&.id} failed to authenticate with authenticator "\
                 "#{@authn.authenticator_description}",
-            error_msg: @error_message
+              error_msg: @error_message
           )
         end
       end

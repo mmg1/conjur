@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-describe Audit::Event2::Authn::Authenticate do
+describe Audit::Event::Authn::Authenticate do
   subject(:event) do
-    Audit::Event2::Authn::Authenticate.new(
+    Audit::Event::Authn::Authenticate.new(
       role: the_user,
       authenticator_name: 'authn-test',
       service: service,
@@ -44,7 +44,7 @@ describe Audit::Event2::Authn::Authenticate do
 
   describe 'on failure' do
     subject(:event) do
-      Audit::Event2::Authn::Authenticate.new(
+      Audit::Event::Authn::Authenticate.new(
         role: the_user,
         authenticator_name: 'authn-test',
         service: service,

@@ -1,9 +1,10 @@
 require 'forwardable'
 
 module Audit
-  module Event2
+  module Event
     class Authn
-      class InjectClientCert
+      class Login
+        # TODO: Remove these, not needed
         attr_reader :role, :authenticator_name, :service, :success,
                     :error_message
 
@@ -25,11 +26,10 @@ module Audit
             authenticator_name: authenticator_name,
             service: service,
             success: success,
-            operation: "k8s-inject-client-cert"
+            operation: "login"
           )
         end
 
-        # TODO: This won't be needed if we fix the RFC5424 formatter
         def to_s
           message
         end
@@ -37,11 +37,11 @@ module Audit
         def message
           @authn.message(
             success_msg:
-              "#{@role&.id} successfully injected client certificate with " \
-                "authenticator #{@authn.authenticator_description}",
+              "#{@role&.id} successfully logged in with authenticator " \
+                "#{@authn.authenticator_description}",
             failure_msg:
-              "#{@role&.id} failed to inject client certificate with " \
-                "authenticator #{@authn.authenticator_description}",
+              "#{@role&.id} failed to login with authenticator " \
+                "#{@authn.authenticator_description}",
             error_msg: @error_message
           )
         end

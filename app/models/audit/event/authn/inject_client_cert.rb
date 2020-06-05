@@ -1,10 +1,11 @@
 require 'forwardable'
 
 module Audit
-  module Event2
+  module Event
     class Authn
-      class Authenticate
-        attr_reader :authenticator_name, :service, :success, :error_message
+      class InjectClientCert
+        attr_reader :role, :authenticator_name, :service, :success,
+                    :error_message
 
         extend Forwardable
         def_delegators :@authn, :facility, :message_id, :severity,
@@ -24,7 +25,7 @@ module Audit
             authenticator_name: authenticator_name,
             service: service,
             success: success,
-            operation: "authenticate"
+            operation: "k8s-inject-client-cert"
           )
         end
 
@@ -35,13 +36,13 @@ module Audit
 
         def message
           @authn.message(
-              success_msg:
-                "#{@role&.id} successfully authenticated with authenticator " \
-                "#{@authn.authenticator_description}",
-              failure_msg:
-                "#{@role&.id} failed to authenticate with authenticator "\
-                "#{@authn.authenticator_description}",
-              error_msg: @error_message
+            success_msg:
+              "#{@role&.id} successfully injected client certificate with " \
+                "authenticator #{@authn.authenticator_description}",
+            failure_msg:
+              "#{@role&.id} failed to inject client certificate with " \
+                "authenticator #{@authn.authenticator_description}",
+            error_msg: @error_message
           )
         end
       end

@@ -1,7 +1,7 @@
 require 'forwardable'
 
 module Audit
-  module Event2
+  module Event
     class Authn
       class ValidateStatus
         attr_reader :role, :authenticator_name, :service, :success,
