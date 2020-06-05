@@ -22,7 +22,7 @@ module Authentication
         validate_account_exists:     ::Authentication::Security::ValidateAccountExists.new,
         validate_security:           ::Authentication::Security::ValidateSecurity.new,
         validate_origin:             ValidateOrigin.new,
-        log_audit_event:             ::Authentication::LogAuditEvent.new,
+        audit_log:                   ::Audit.logger,
         verify_and_decode_token:     ::Authentication::OAuth::VerifyAndDecodeToken.new,
         logger:                      Rails.logger
       },
@@ -134,8 +134,8 @@ module Authentication
       end
 
       def audit_success
-        @log_audit_event.call(
-          event: ::Audit::Event2::Authn::Authenticate.new(
+        @audit_log.log(
+          ::Audit::Event2::Authn::Authenticate.new(
             authenticator_name: authenticator_name,
             service: webservice,
             role: role,
@@ -146,8 +146,8 @@ module Authentication
       end
 
       def audit_failure(err)
-        @log_audit_event.call(
-          event: ::Audit::Event2::Authn::Authenticate.new(
+        @audit_log.log(
+          ::Audit::Event2::Authn::Authenticate.new(
             authenticator_name: authenticator_name,
             service: webservice,
             role: role,

@@ -19,8 +19,8 @@ module Authentication
       validate_webservice_exists:      ::Authentication::Security::ValidateWebserviceExists.new,
       role_class:                      ::Role,
       implemented_authenticators:      Authentication::InstalledAuthenticators.authenticators(ENV),
-      log_audit_event:                 ::Authentication::LogAuditEvent.new
-    },
+      audit_log:                       ::Audit.logger
+  },
     inputs:       %i(authenticator_status_input enabled_authenticators)
   ) do
 
@@ -85,8 +85,8 @@ module Authentication
     end
 
     def audit_success
-      @log_audit_event.call(
-        event: ::Audit::Event2::Authn::ValidateStatus.new(
+      @audit_log.log(
+        ::Audit::Event2::Authn::ValidateStatus.new(
           authenticator_name: authenticator_name,
           service: webservice,
           role: role,
@@ -97,8 +97,8 @@ module Authentication
     end
 
     def audit_failure(err)
-      @log_audit_event.call(
-        event: ::Audit::Event2::Authn::ValidateStatus.new(
+      @audit_log.log(
+        ::Audit::Event2::Authn::ValidateStatus.new(
           authenticator_name: authenticator_name,
           service: webservice,
           role: role,
