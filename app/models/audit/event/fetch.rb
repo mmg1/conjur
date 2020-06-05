@@ -5,12 +5,14 @@ module Audit
 
       def initialize(
         user:,
+        client_ip:,
         resource:,
         success:,
         version:,
         error_message: nil
       )
         @user = user
+        @client_ip = client_ip
         @resource = resource
         @success = success
         @error_message = error_message
@@ -42,6 +44,7 @@ module Audit
         {
           SDID::AUTH => { user: user.id },
           SDID::SUBJECT => subject_sd_value,
+          SDID::CLIENT => { ip: @client_ip}
         }.merge(
           possibly_failing_event.action_sd(message_id)
         )

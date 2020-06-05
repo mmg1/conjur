@@ -36,7 +36,8 @@ module Audit
         {
           SDID::AUTH => { user: user.id },
           SDID::SUBJECT => @subject.to_h,
-          SDID::ACTION => { operation: @operation }
+          SDID::ACTION => { operation: @operation },
+          SDID::CLIENT => { ip: @policy_version.client_ip }
         }.tap do |sd|
           if @policy_version
             sd[SDID::POLICY] = {
