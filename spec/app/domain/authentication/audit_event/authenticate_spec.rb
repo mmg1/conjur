@@ -16,7 +16,7 @@ describe Audit::Event::Authn::Authenticate do
     it 'sends an info message' do
       # TODO: These two things should be tested separately
       ruby_log = ruby_logger
-      audit_logger = Audit::LogAdapter.new(ruby_log)
+      audit_logger = Audit::SyslogLogAdapter.new(ruby_log)
 
       expect(ruby_log).to receive(:log).with(
         Logger::Severity::INFO,
@@ -56,7 +56,7 @@ describe Audit::Event::Authn::Authenticate do
     it 'sends a warning message' do
       # TODO: These two things should be tested separately
       ruby_log = ruby_logger
-      audit_logger = Audit::LogAdapter.new(ruby_log)
+      audit_logger = Audit::SyslogLogAdapter.new(ruby_log)
 
       expect(ruby_log).to receive(:log).with(
         Logger::Severity::WARN,

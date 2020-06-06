@@ -33,15 +33,10 @@ require 'logger/formatter/rfc5424_formatter'
 # instead of:
 #   Audit.logger.log(event.severity, event, ::Audit::Event2.progname)
 if path = Rails.application.config.try(:audit_socket)
-  Audit.logger = Audit::LogAdapter.new(
+  # TODO: Add tests for this.  Our CI isn't verifying if we've broken anything.
+  Audit.logger = Audit::SyslogLogAdapter.new(
     Logger.new(UNIXSocket.open(path)).tap do |logger|
       logger.formatter = Logger::Formatter::RFC5424Formatter
     end
   )
 end
-# else
-#   puts "Setting to log adapter"
-#   Audit.logger = Audit::LogAdapter.new(Rails.logger)
-# end
-#
-#
